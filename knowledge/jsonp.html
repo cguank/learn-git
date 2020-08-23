@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <script>
+        id = 0;
+
+        function jsonp(req) {
+            let url = req.url;
+            let params = [];
+            let data = req.data;
+            let cb = req.callback;
+            let cbName = "jsonp" + id++;
+            for (let key in data) {
+                params.push(`${key}=${JSON.stringify(data[key])}`);
+            }
+            url += "?";
+            url += `callback=${cbName}&`;
+            url += params.join("&");
+
+            let script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = url;
+            document.head.append(script);
+            window[cbName] = function(res) {
+                console.log('执行回掉了');
+
+                cb && cb(res);
+                document.head.removeChild(script);
+                delete window[cbName];
+            };
+            script.onerror = function() {
+                console.log('出错了');
+                document.head.removeChild(script);
+                window[cbName] & delete window[cbName];
+            }
+
+        }
+        jsonp({
+            url: "http://localhost:3000/hello",
+            data: {
+                msg: 11112222,
+                oo: [12, 3]
+            },
+            callback: function(res) {
+                console.log(res);
+
+            }
+        })
+    </script>
+</body>
+
+</html>

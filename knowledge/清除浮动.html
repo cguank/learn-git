@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html style="font-size: 20px;">
+<style>
+    .item1 {
+        float: left;
+        width: 5rem;
+        height: 8rem;
+        background-color: red;
+    }
+    
+    .item2 {
+        float: left;
+        /* width: 100px;
+        height: 100px; */
+        width: 2.5rem;
+        height: 10rem;
+        background-color: blueviolet;
+    }
+    
+    .father {
+        border: 5px solid black;
+        /*第一种设置高度 只适合高度固定的布局*/
+        height: 10rem;
+        /*2 overflow: hidden; 内容超出会被隐藏掉*/
+        /* overflow: hidden; */
+    }
+    /*3 ：after*/
+    /* .clearfix::after {
+        content: "";
+        display: block;
+        visibility: hidden;
+        clear: both;
+    } */
+</style>
+
+<body>
+    <script>
+        setTimeout(() => {
+            console.log('ssss');
+
+        }, 5000);
+    </script>
+    <div class="father clearfix">
+        <div class="item1"></div>
+        <div class="item2"></div>
+
+    </div>
+    <span>father后面的span元素</span>
+</body>
+
+</html>
