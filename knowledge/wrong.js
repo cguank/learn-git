@@ -2,6 +2,7 @@
 
 /**
  function f1() {
+    console.log(this);
     console.log(this.length);
 }
 let arr = [f1, 1, 2, 3];

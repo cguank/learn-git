@@ -1,6 +1,6 @@
 function myajax(url) {
     return new Promise((resolve, reject) => {
-        let handler = function() {
+        let handler = function () {
             if (this.readyState != 4) {
                 return;
             }
@@ -19,188 +19,72 @@ function myajax(url) {
     })
 }
 
+// promise请求失败则重复请求n次,利用了串行递归方法
+function retryPromise(promise, retry = 3) {
+    let count = retry;
+    promise = Promise.resolve(promise);
+    return new Promise((resolve, reject) => {
+        (function iter() {
+            promise.then(r => {
+                resolve(r);
+            }).catch(e => {
+                if (count--) {
+                    iter();
+                } else {
+                    reject(e)
+                }
+            })
+        })()
+    })
+}
+// 多个promise请求，尽可能快且按顺序打印
+// 1 当时做的promise做法
+function fastPromises (promises) {
+    const arr = [];
+    let start = 0;
+    function process(data, index) {
+        arr[index] = data;
+        for (let i = start; i < promises.length; i++) {
+            if (arr[i]) {
+                start++;
+                console.log(arr[i]);
+            } else {
+                break;
+            }
+        }
+    }
+    promises.forEach((promise, index) => {
+        Promise.resolve(promise).then(r => {
+            process(r, index);
+        }).catch(e => {
+            process(e, index);
+        })
+    })
+}
+// 2 async await做法
+async function logInOrder(urls) {
+    // 并发读取远程URL
+    const textPromises = urls.map(async url => {
+        const response = await fetch(url);
+        return response.text();
+    });
+
+    // 按次序输出
+    for (const textPromise of textPromises) {
+        console.log(await textPromise);
+    }
+}
+
+////////////////////////////////
 function loadImgUrl(url) {
     return new Promise((resolve, reject) => {
         let img = new Image();
-        img.onload = function() {
+        img.onload = function () {
             resolve(img);
         }
-        img.onerror = function() {
+        img.onerror = function () {
             reject(new Error("img error"))
         }
         img.src = url;
     })
-}
-
-
-// function timePromise (wait, isFalse) {
-//     return new Promise((resolve, reject) => {
-//         setTimeout(() => {
-//             if (isFalse) {
-//                 reject("error" + wait);
-//             } else {
-//                 resolve("sus" + wait);
-//             }
-//         }, wait);
-//     })
-// }
-
-Promise.myall = function(promises) {
-    return new Promise((resolve, reject) => {
-        let done = gen(promises.length, resolve);
-        promises.forEach((promise, index) => {
-            promise.then(val => {
-                done(val, index);
-            }).catch(e => {
-                reject(e);
-            })
-        })
-    })
-
-}
-
-function gen(length, resolve) {
-    let count = 0;
-    let values = [];
-    return function(val, index) {
-        values[index] = val;
-        if (++count == length) {
-            resolve(values);
-        }
-    }
-}
-Promise.myrace = function(promises) {
-    return new Promise((resolve, reject) => {
-        promises.forEach((promise) => {
-            promise.then(val => {
-                resolve(val);
-            }).catch(e => {
-                reject(e);
-            })
-        })
-    })
-}
-Promise.myallSettled = function(promises) {
-    return new Promise((resolve, reject) => {
-        values = [];
-        count = 0;
-        promises.forEach((promise, index) => {
-            promise.then(val => {
-                values[index] = { value: val, status: 'fulfilled' };
-                if (++count == promises.length) {
-                    resolve(values);
-                }
-            }).catch(e => {
-                values[index] = { reason: e, status: 'rejected' };
-                if (++count == promises.length) {
-                    resolve(values);
-                }
-            })
-        })
-    })
-}
-
-
-/**
- * 手动实现promise
- */
-function MyPromise(executor) {
-    let self = this;
-    this.status = 'pending';
-    this.onFulfilledCallbacks = [];
-    this.onRejectedCallbacks = [];
-
-    function resolve(val) {
-        setTimeout(() => {
-            if (self.status == 'pending') {
-                self.status = 'resolved';
-                self.data = val;
-                self.onFulfilledCallbacks.forEach(callback => {
-                    callback(val);
-                })
-            }
-        });
-    }
-
-    function reject(val) {
-        setTimeout(() => {
-            if (self.status == 'pending') {
-                self.status = 'rejected';
-                self.data = val;
-                self.onRejectedCallbacks.forEach(callback => {
-                    callback(val);
-                })
-            }
-        });
-    }
-    try {
-        executor(resolve, reject)
-    } catch (e) {
-        reject(e);
-    }
-}
-MyPromise.prototype.then = function(onResolve, onReject) {
-    onResolve = typeof onResolve == 'function' ? onResolve : v => v;
-    onReject = typeof onReject == 'function' ? onReject : e => {
-        throw e
-    }
-    if (this.status == 'resolved') {
-        return new MyPromise((resolve, reject) => {
-            try {
-                let result = onResolve(this.data);
-                if (result instanceof MyPromise) {
-                    result.then(resolve, reject);
-                } else {
-                    resolve(result);
-                }
-            } catch (e) {
-                reject(e);
-            }
-        })
-    }
-    if (this.status == 'reject') {
-        return new MyPromise((resolve, reject) => {
-            try {
-                let result = onReject(this.data);
-                if (result instanceof MyPromise) {
-                    result.then(resolve, reject);
-                } else {
-                    resolve(result);
-                }
-            } catch (e) {
-                reject(e);
-            }
-        })
-    }
-    if (this.status == 'pending') {
-        return new MyPromise((resolve, reject) => {
-            this.onFulfilledCallbacks.push(() => {
-                try {
-                    let result = onResolve(this.data);
-                    if (result instanceof MyPromise) {
-                        result.then(resolve, reject);
-                    } else {
-                        resolve(result);
-                    }
-                } catch (e) {
-                    reject(e)
-                }
-            })
-            this.onRejectedCallbacks.push(() => {
-                try {
-                    let result = onReject(this.data);
-                    if (result instanceof MyPromise) {
-                        result.then(resolve, reject);
-                    } else {
-                        resolve(result);
-                    }
-                } catch (e) {
-                    reject(e)
-                }
-            })
-        })
-    }
-}
-MyPromise.prototype.catch = function(onReject) {
-    return this.then(null, onReject);
 }

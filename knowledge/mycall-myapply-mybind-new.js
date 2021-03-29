@@ -30,9 +30,11 @@ Function.prototype.myBind = function(context, ...args) {
     if (typeof this != "function") {
         throw new Error("非函数");
     }
-    let _this = this;
-    let fBound = function() {
-        _this.apply(this instanceof fBound ? this : context, args.concat(...arguments));
+    const self = this;
+    const fBound = function () {
+        return self.apply(this instanceof fBound ?
+            this: context, args.concat(...arguments)
+        );
     }
     fBound.prototype = Object.create(this.prototype);
     /**
@@ -118,7 +120,7 @@ function throttle(fn, wait) { //最后一次总会执行
     let timer = null;
     return function() {
         let now = Date.now();
-        if (now - pre > 0) {
+        if (now - pre > wait) {
             fn.apply(this, arguments);
             pre = now;
             //清空timer，并让timer能触发

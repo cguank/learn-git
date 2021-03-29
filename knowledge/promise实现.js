@@ -132,6 +132,36 @@ function resolvePromise(promise2, x, resolve, reject) {
     }
 }
 
+Promise.resolve = function (data) {
+    if (data instanceof Promise) {
+        return data;
+    }
+    return new Promise((resolve, reject) => {
+        if (data && typeof data.then === 'function') {
+            // 不加这个data.then会比主线程先执行
+            setTimeout(() => {
+                data.then(resolve, reject);
+            }, 0);
+        } else {
+            resolve(data);
+        }
+    })
+
+}
+
+// finally 的函数不接受参数也就是说finally不会返回任何东西，同时finnally会接收前一个的传值，值穿透到下一个then
+// 这个写法导致无法值穿透，同时会接收到finnaly的返回值
+// Promise.prototype.finally = function (fn) {
+//   return Promise.resolve(fn()).then(r=>r).catch(err=>err);
+// }
+Promise.prototype.finally = function (fn) {
+    return this.then(
+        res => Promise.resolve(fn()).then(() => res),
+        // 注意这里是throw err，也就是说finally前是catch，fanally后也是catch
+        err => Promise.resolve(fn()).then(() => {throw err})
+    )
+}
+
 Promise.defer = Promise.deferred = function () {
     let dfd = {};
     dfd.promise = new Promise((resolve, reject) => {

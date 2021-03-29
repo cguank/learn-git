@@ -5,6 +5,7 @@ let allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost:8085');
     res.header('Access-Control-Allow-Headers', "*,cache-control,Content-Type,Range,token,accept");
     res.header('Access-Control-Allow-Methods', '*');
+    // cors如果要发送cookie也需要前端配置，比如允许发送cookie，那么前端要配置axios.defults.withCredentials=true
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
 }

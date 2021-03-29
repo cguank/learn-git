@@ -22,8 +22,8 @@
 
 /**
  * tcp udp的区别
- * tcp：面向连接的，可靠的，通过字节流传输的协议
- * udp：面向无连接，不可靠，通过报文传输的协议
+ * tcp：面向连接的，可靠的，通过字节流传输的协议，支持1对1通信
+ * udp：面向无连接，不可靠，通过报文传输的协议，支持1对多
  * 其中：
  * 面向连接：通信前需要3次握手，通信结束要4此挥手
  * 可靠性：，不丢包，按顺序,
@@ -34,7 +34,7 @@
  * http 头部有哪些字段
  * 1.cache-control
  * 2.Connection:Keep-Alive
- * 3.Content-Type(text/html,application/json)
+ * 3.Content-Type(text/html,image/png,application/json,multipart/form-data)
  * 7.Accept-encoding/content-encoding(gzip,deflat,br)
  * 4.ETag(If-None-Match)
  * 5.Last-Modified(If-Modified-since)
@@ -67,6 +67,7 @@
  * 2. 采用多路复用，一个tcp连接可以有多条流，对端可以通过帧标识知道属于哪个请求。这样就可以避免队头阻塞，极大提高性能（帧代表最小的数据单位，每个帧会标识出属于哪个流，流由多个帧组成）
  * 3.对头部压缩
  * 4.服务器可以进行推送（请求style.css，服务器还会多发一个script.js）
+ * 缺点： tcp队头阻塞。 如果HTTP / 2 连接双方的网络中有一个数据包丢失， 或者任何一方的网络出现中断， 整个TCP连接就会暂停， 丢失的数据包需要被重新传输。 因为TCP是一个按序传输的链条， 因此如果其中一个点丢失了， 链路上之后的内容就都需要等待。
  */
 
 /**
@@ -98,6 +99,9 @@
 
 /**
  * script属性和link属性
+ * 下载script文件和执行script文件都会阻塞dom解析
+ * 加上defer就是下载不会阻塞，下载号后最后执行
+ * async下载不会阻塞，下载号后立即执行
  * 1.script:
  * a.src b.type="text/javascript" c.defer/async
  * 2.link:

@@ -68,7 +68,8 @@ function subType(name, age, level) {
 //组合继承结束
 
 //寄生组合继承开始
-function inherit(superType, subType) {
+function inherit (superType, subType) {
+    // 这是继承父类方法
     let prototype = Object.create(superType.prototype);
     prototype.construtor = subType;
     subType.prototype = prototype;

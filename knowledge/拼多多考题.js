@@ -34,7 +34,7 @@ var x = 0,
 }
 console.log(x, y);
 //各种类型转换和数组
-为bool时，会将bool转成数字
+为bool时，会将bool转成数字,原始值总是将两边转成数字比较
 console.log(false == undefined,"\n" == 0);
 console.log(false == [])
 console.log("" == [null],"" == [undefined])
@@ -89,7 +89,7 @@ obj.fn2()
 */
 function foo() {
     function bar(a) {
-        i = 3;
+        var i = 3;
         console.log(a + i);
     }
     for (var i = 0; i < 10; i++) {
@@ -109,4 +109,30 @@ if (a) {
     function foo() {
         console.log(2);
     }
+}
+
+// pdd 多个请求尽可能快且按顺序打印
+function geturl(urls) {
+    const result = [];
+    let count = 0;
+
+    function process(index, data) {
+        result[index] = data;
+        for (let i = count; i < urls.length; i++) {
+            if (result[i]) {
+                count++;
+                console.log(result[i]);
+            } else {
+                break;
+            }
+        }
+    }
+    urls.forEach((url, index) => {
+        Axios.get(url).then(res => {
+            process(index, res.data);
+
+        }).catch(err => {
+            process(index, err);
+        })
+    })
 }
