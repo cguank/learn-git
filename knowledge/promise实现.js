@@ -7,7 +7,10 @@ class Promise {
         this.data = null;
         this.onFulfilledCallbackArr = [];
         this.onRejectedCallbackArr = [];
-        try {
+      try {
+            // 这里需要加上 bind 是因为 resolve 和 reject 是作为参数传递给 executor 的，
+            // 这样 executor 内部调用 resolve/reject 时，this 会指向 executor 的作用域（不是 Promise 实例本身）。
+            // 加上 bind(this) 可以确保 resolve/reject 内部的 this 始终指向当前的 Promise 实例。
             executor(this.resolve.bind(this), this.reject.bind(this));
         } catch (error) {
             this.reject(error)

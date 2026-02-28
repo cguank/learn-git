@@ -1,24 +1,24 @@
 // shopee 考题
 async function async1() {
-  console.log('async1 start')
+  console.log('async1 start') // 2
   await async2()
-  console.log('async1 end')
+  console.log('async1 end') // 6
 }
 async function async2() {
-  console.log('async2')
+  console.log('async2') // 3
 }
-console.log('script start')
+console.log('script start') // 1
 setTimeout(function () {
-  console.log('setTimeout')
+  console.log('setTimeout') // 8
 }, 0)
 async1();
 new Promise(function (resolve) {
-  console.log('promise1')
+  console.log('promise1') // 4
   resolve();
 }).then(function () {
-  console.log('promise2')
+  console.log('promise2') // 7
 })
-console.log('script end')
+console.log('script end') // 5
 
 //async函数返回的 Promise 对象，必须等到内部所有await命令后面的 Promise 对象执行完及后面的return执行完，才会发生状态改变
 // 第一例子

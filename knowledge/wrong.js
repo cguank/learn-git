@@ -61,7 +61,11 @@ const shape = {
     radius: 10,
     diameter() {
         return this.radius * 2
-    },
+  },
+    // 箭头函数不会创建自己的this，它只会捕获定义时外层作用域的this。
+    // 在这里，perimeter 是用普通函数定义的，因此它的this指向 shape 对象。
+    // perimeter 内部的箭头函数 (() => ...) 没有自己的 this，会继承 perimeter 执行时的 this，即 shape。
+    // 这就是为什么箭头函数的 this 没有指向全局，而是 shape
     perimeter: function() {
         return (() => 2 * Math.PI * this.radius)()
     }

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>eStatements</title>
+  <link
+    href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900italic,900'
+    rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      padding: 0 40px 24px 40px;
+      color: rgba(0, 0, 0, 0.87);
+      font-family: 'Roboto';
+      font-weight: 400;
+    }
+
+    .page-header-space {
+      height: 100px;
+    }
+
+    .header-row {
+      display: flex;
+      width: calc(100vw - 100px);
+      flex-direction: row;
+      justify-content: space-between;
+      position: fixed;
+      top: 20px;
+    }
+
+    .header-row .left-part img {
+      width: 200px;
+      height: 40px;
+      padding-bottom: 1.2px;
+    }
+
+    .header-row .right-part {
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: 500;
+      color: #EE4D2D;
+    }
+
+    .info-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .info-row .left-part {
+      width: 250px;
+    }
+
+    .info-row .left-part .title {
+      font-size: 20px;
+      font-weight: 550;
+    }
+
+    .info-row .left-part .description {
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .info-row .left-part .content {
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .info-row .right-part .title {
+      font-size: 20px;
+      font-weight: 550;
+    }
+
+    .info-row .right-part {
+      /* margin-top: 4px; */
+      font-size: 14px;
+    }
+
+    .summary-row {
+      margin-top: 40px;
+    }
+
+    .summary-row .title {
+      font-size: 25px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .summary-row .description {
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    .table-content table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .table-content table td {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      padding-right: 8px;
+      padding-left: 8px;
+      /* text-align: center; */
+      background-color: #FFF;
+      font-size: 10px;
+    }
+
+    .table-content table th {
+      /* text-align: center; */
+      font-size: 11px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      padding-right: 8px;
+      padding-left: 8px;
+      background-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .table-content table thead td {
+      font-size: 11px;
+    }
+
+    .table-content table tbody tr {
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .table-header {
+      background-color: rgba(0, 0, 0, 0.15) !important;
+      font-weight: bold;
+    }
+
+    .transaction-detail-row {
+      margin-top: 40px;
+    }
+
+    .transaction-detail-row .title {
+      font-size: 25px;
+      font-weight: 500;
+    }
+
+    .page-footer {
+      height: auto;
+    }
+
+    .page-footer-space {
+      height: 98px;
+    }
+
+    .page-footer {
+      position: fixed;
+      bottom: 0;
+      width: calc(100vw - 100px);
+      border-top: 1px solid black;
+      padding-top: 8px;
+      padding-bottom: 24px;
+      font-size: 8px;
+    }
+
+    .page-footer .page-footer-info {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .margin-space {
+      margin-top: 16px;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-left {
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header-row page-header">
+    <div class="left-part">
+      <img
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAABaCAYAAAArWlbfAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAB9bSURBVHgB7Z1PbxzHlcBfVTeFIJHsGUo2YiALNxdYIBBEiQr2kMuuR85igQ2omPIHWFM67N5Wcj6ARfqwt42lfIBolMMeLUpUdk8rjb6ARUWysaewfbUtcYIEiwXZ3ZX3qnuo4bCr/03NTM/M+wmjJqd7mjXVVfVevXr1noAZZW/tx57+IXA9iIQHrngziqImCPEuvtsQCt8T0ABQdF1XAWzJPzkfNzs7XWAYhmHmBhemCC3c9mUDpIPCDRqRVF6EQk0K8aYA8ACEF1+pPBUmH8IT4NBbCmWgeH0zofpv3cAz6+pUSJ+/BAzDMMzcIGCC7K15OCP7XuNw1oaQcEtmbfBauCm8jmZvo0eE4cXmf321AwzDMMxcYH1GWMYkeWzWpn8clM0KxknowAoeWBAyDMPMCYUE4aBJkoRbEEVLhyZJJRpG4ZZtkmQYhmGYiXJMEO6tnmsFAGsOyPdQaHn4VkMLt2TG1hNuDgs3hmEYZgY4FIR6vS5646ZS6kYs81i4MQzDMLOPFoQkBFVw8jHO7FaAYRiGYeYIqf/HmSAu5LEQZBiGYeYOSY4wZA4FRuOAswcMwzDM3OCGwcKGzN9N2AWlZn5LAa6KPll8+OI+MAzDMHODK0FcyHGM8YXjXGxucegxhmEYZvaQeQ4yOFnssBBkGIZhZhWZd4HSYc4YhmEYZjbJFYRIa+8X5z8ChmEYhplBxKvLy4V2zuNFbanUXXADH+aa/+82t3w2FTMMw8wIhQUh04cSO0LCreaD39+FmqLjw1Lg836iqAsn/s+3Kch1RKLg5PF1ZlSYmlv/6wPDzDi6r0UnPtDJBYZERsIHqXzqq5wFZ3ywIBwOXzgHl+ow4O+tnV2ByP1AKdXCX0kwZaWtIkG4Eyr1zAXYaj580YGKvFw9tyGEuDn4vkALQnP7+VVgmBlmb22locLwKYzGl8LHwblDlrhh+iiTDwvC4emiMLw4KWFIQdJVLIhaUJ0uNoKtKh3u5epyWwhIWUNWncXtF5zkmJlpkv73GEbPLiqcm3W2Qk0zRZxlmGxQI1x4vNdaGUvi4B5kjkEl5nHSCVswHA2cwa3TvfCeu+wcxTC1YwmtPe2Xl5fvHOZ8ZazBgtAOXvSDg3UYE2QGJeELwwvANCjkXlsLxJ+f5fizDFMjtMIaLjxiYWgXFoSWEFJ+AGMgFoIOCUEPRounHOfpy8vnOQ4tw9SLJRSGX3zDiqo1CmWoZwrRghGjA6THQrCIGRYX2ik+rEo8REVDKPxcnGWksBlXgroADMPUjabrOI9QGL7/NnuXDg0LQouQoBql00xiDs
