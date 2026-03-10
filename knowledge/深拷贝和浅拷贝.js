@@ -53,6 +53,27 @@ function deepCopy(target) {
     return rt;
 }
 
+function deepClone(obj,cache=new WeakMap()) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (cache.has(obj)) return cache.get(obj);
+  if (obj instanceof Date) return new Date(obj)
+  if (obj instanceof RegExp) return new RegExp(RegExp)
+  if (obj instanceof Map) return new Map(obj)
+  if (obj instanceof Set) return new Set(obj)
+  if (obj instanceof Error) {
+    const err = new Error(obj.message);
+    err.stack = obj.stack;
+    return err;
+  }
+  const newObj = Array.isArray(obj) ? [] : {};
+  cache.set(obj, newObj);
+  const keys = Reflect.ownKeys(obj);
+  for (const key of keys) {
+    newObj[key] = deepClone(obj[key],cache);
+  }
+  return newObj;
+}
+
 /**
  * 完整拷贝一个对象obj，包括obj的原型
  * assign不能拷贝原型，将第一个参数之后的对象复制到第一个参数

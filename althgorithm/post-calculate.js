@@ -1,90 +1,76 @@
-// 优先级
-const priority = {
+const PriorityMap = {
   '*': 2,
   '/': 2,
   '+': 1,
   '-': 1,
   '(': 0,
 }
-function operationCal (a,b,opt) {
-  switch (opt) {
-    case '+':
-      return a + b;
-    case '-':
-      return a - b;
-    case '*':
-      return a * b;
-    case '/':
-      return a / b;
-    return 0
-  }
-}
+function calculateStr(str) {
+  const numStack = []
+  const optStack = []
+  const compute = () => {
+    const b = numStack.pop()
+    const a = numStack.pop()
+    const opt = optStack.pop()
+    let res = 0
+    switch (opt) {
+      case '+':
+        res = a + b
+        break
+      case '-':
+        res = a - b
+        break
+      case '*':
+        res = a * b
+        break
+      case '/':
+        res = Math.floor(a / b)
+        break
 
-function main (str) {
-  let i = 0;
-  const len = str.length
-  // 数字栈、符号栈
-  const result = [];
-  const optStack = [];
-  while (i < len) {
-    // 取数字
-    if (isFinite(str[i])) {
-      let num = Number(str[i]);
-      while (i + 1 < len && isFinite(str[i + 1])) {
-        num = num * 10 + Number(str[i + 1])
-        i++;
-      }
-      i++;
-      result.push(num);
-      continue
+      default:
+        break
     }
-    // 左括号
-    if (str[i] === '(') {
-      optStack.push(str[i++])
-      continue
-    }
-    // 右括号
-    if (str[i] === ')') {
-      let char = optStack.pop();
-      while (char!=='(') {
-        result.push(char);
-        char = optStack.pop();
-      }
-      i++
-      continue;
-    }
-    // 比较opt优先级
-    while (priority[optStack[optStack.length-1] ] >= priority[str[i]]) {
-      result.push(optStack.pop())
-    }
-    optStack.push(str[i++])    
+    numStack.push(res)
   }
-  // 清空符号栈
+  for (let i = 0; i < str.length; i++) {
+    const c = str[i]
+    if (!isNaN(c)) {
+      let num = 0
+      while (i < str.length && !isNaN(str[i])) {
+        num = num * 10 + Number(str[i])
+        i++
+      }
+      numStack.push(num)
+      i--
+      continue
+    }
+    if (c === '(') {
+      optStack.push(c)
+      continue
+    }
+    if (c === ')') {
+      while (optStack.at(-1) !== '(') {
+        compute()
+      }
+      optStack.pop()
+      continue
+    }
+    if (c === '-' && (i === 0 || str[i - 1] === '(')) {
+      numStack.push(0)
+    }
+    while (optStack.length && PriorityMap[c] <= PriorityMap[optStack.at(-1)]) {
+      compute()
+    }
+    optStack.push(c)
+  }
   while (optStack.length) {
-    result.push(optStack.pop())
+    compute()
   }
-  return result;
+  return numStack[0]
 }
 
-function cal (postStr) {
-  const result = [];
-  for (const char of postStr) {
-    if (isFinite(char)) {
-      result.push(char)
-      continue;
-    }
-    const b = result.pop();
-    const a = result.pop();
-    const rt = operationCal(a, b, char);
-    result.push(rt);
-  }
-  return result[0];
-}
-
-const str1 = '3+5*(2-8+1)+5/1'
-const postStr1 = main(str1)
-console.log('postStr1',postStr1,cal(postStr1),eval(str1))  
-
-const str2 = '10-2*6'
-const postStr2 = main(str2)
-console.log('postStr2',postStr2,cal(postStr2),eval(str2))  
+console.log(calculateStr("1+2*3")); // 7
+console.log(calculateStr("(1+2)*3")); // 9
+console.log(calculateStr("100+200/2")); // 200
+console.log(calculateStr("1*(-2)*3")); // -6
+console.log(calculateStr("6*(5+2)-8/2")); // 38
