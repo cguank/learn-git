@@ -57,7 +57,7 @@ function deepClone(obj,cache=new WeakMap()) {
   if (obj === null || typeof obj !== 'object') return obj;
   if (cache.has(obj)) return cache.get(obj);
   if (obj instanceof Date) return new Date(obj)
-  if (obj instanceof RegExp) return new RegExp(RegExp)
+  if (obj instanceof RegExp) return new RegExp(obj)
   if (obj instanceof Map) return new Map(obj)
   if (obj instanceof Set) return new Set(obj)
   if (obj instanceof Error) {
