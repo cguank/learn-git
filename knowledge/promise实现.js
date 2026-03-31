@@ -157,6 +157,7 @@ Promise.resolve = function (data) {
 // Promise.prototype.finally = function (fn) {
 //   return Promise.resolve(fn()).then(r=>r).catch(err=>err);
 // }
+// fn的返回值可能是promise，所以要等待其执行完才能传给下一个
 Promise.prototype.finally = function (fn) {
     return this.then(
         res => Promise.resolve(fn()).then(() => res),
@@ -165,12 +166,49 @@ Promise.prototype.finally = function (fn) {
     )
 }
 
-Promise.defer = Promise.deferred = function () {
-    let dfd = {};
-    dfd.promise = new Promise((resolve, reject) => {
-        dfd.resolve = resolve;
-        dfd.reject = reject;
-    });
-    return dfd;
+Promise.all = function (promises) {
+  return new Promise((resolve, reject) => {
+    let result = []
+    let count = 0
+    const n = promises.length
+
+    // 参数为空直接resolve
+    if (n === 0) return resolve(result)
+
+    promises.forEach((p, index) => {
+      // 兼容非Promise值
+      Promise.resolve(p).then(
+        (res) => {
+          result[index] = res // 保证结果顺序
+          count++
+          if (count === n) {
+            resolve(result) // 全部成功
+          }
+        },
+        (err) => {
+          reject(err) // 只要有一个失败，直接reject
+        },
+      )
+    })
+  })
 }
+
+Promise.race = function (promises) {
+  return new Promise((resolve, reject) => {
+    // 遍历每一个promise
+    promises.forEach((p) => {
+      // 兼容非Promise值，第一个执行完毕的直接调用
+      Promise.resolve(p).then(
+        (res) => {
+          resolve(res) // 成功的
+        },
+        (err) => {
+          reject(err) // 失败的
+        },
+      )
+    })
+  })
+}
+
+
 module.exports = Promise;

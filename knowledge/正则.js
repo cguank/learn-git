@@ -13,7 +13,23 @@ function format(str) {
   // 然后再统一进行替换（即先确定所有要替换的位置，再依次替换，不会边替边影响后面的匹配位置）。
   // 例如 '1234567'.replace(/\B(?=(\d{3})+(?!\d))/g, ',')，会提前把所有该加逗号的位置找出来再加。
   const part1 = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return part1+'.'+parts[1]
+  return part1 + '.' + parts[1]
 }
 const num1 = '12345'
-console.log(format(num1));
+console.log(format(num1))
+
+function mySplit(str, sep) {
+  const res = []
+  let start = 0
+  const len = sep.length
+
+  for (let i = 0; i <= str.length - len; i++) {
+    if (str.slice(i, i + len) === sep) {
+      res.push(str.slice(start, i))
+      start = i + len
+      i = start - 1
+    }
+  }
+  res.push(str.slice(start))
+  return res
+}

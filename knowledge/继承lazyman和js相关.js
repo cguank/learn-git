@@ -44,50 +44,62 @@ Object.defineProperty()缺陷
  */
 
 
-//原型链继承问题：父类有引用对象属性，在实例A中需改该属性，实例B也会受影响，比如数组
-//理解封装，继承，多态
+/**
+ * 原型链继承会造成引用类型被不同实例篡改，所以引入组合继承；
+ * 但组合继承会让实例和原型都存在父类属性，产生冗余；
+ * 所以又引入寄生组合继承，
+ * 让实例拥有独立父属性，原型只继承父类原型方法，既隔离又无多余冗余。
+ */
 
-function superType(name, age) {
-    this.name = name;
-    this.age = age;
-    this.colors = [1, 2, 3];
+
+function SuperType (name) {
+  this.name = name;
+  this.colors = ['red']
 }
-superType.prototype.getSuper = function() {
-    console.log('super');
-}
-
-function subType(name, age, level) {
-
-    superType.apply(this, arguments);
-    this.age = age;
+SuperType.prototype.sayName = function () {
+  console.log(this.name);
 }
 
-//组合继承开始
-//subType.prototype = new superType();
-//subType.prototype.constructor=subType
-//组合继承结束
 
-//寄生组合继承开始
-function inherit (superType, subType) {
-    // 这是继承父类方法
-    let prototype = Object.create(superType.prototype);
-    prototype.construtor = subType;
-    subType.prototype = prototype;
-    subType.__proto__ = superType //es6继承比寄生组合继承多了这一项
+// 原型链继承开始
+// function SubType(name, age) {
+//   this.name = name
+//   this.age = age
+// }
+// SubType.prototype = new SuperType();
+// 原型链继承结束
+
+// 组合继承开始
+// function SubType (name, age) {
+//   SuperType.call(this, name);
+//   this.age = age;
+// }
+// SubType.prototype = new SuperType();
+// 组合继承结束
+
+// 寄生组合继承开始
+function SubType(name, age) {
+  SuperType.call(this, name)
+  this.age = age
 }
-inherit(superType, subType);
-subType.prototype.sayAge = function() {
-        console.log(this.age);
+function inHerit (subtype, supertype) {
+  const prototype = Object.create(supertype.prototype);
+  prototype.constructor = subtype;
+  subtype.prototype=prototype
+}
+inHerit(SubType, SuperType)
+// 寄生组合继承结束
 
-    }
-    //寄生组合继承结束
+const s1 = new SubType('s1',1)
+const s2 = new SubType('s2', 2)
+s1.sayName()
+s2.sayName()
+s1.colors.push('bb')
+console.log(s1,s2);
+console.log(s1.__proto__);
+console.log(s1.__proto__.__proto__);
+console.log(s1.__proto__.__proto__.__proto__);
 
-
-let a1 = new subType('a1', 1, 1);
-a1.getSuper()
-a1.colors.push(22);
-let a2 = new subType('a2', 2, 2);
-console.log(a1.__proto__, a1, a2);
 
 /**
  * es6 写法

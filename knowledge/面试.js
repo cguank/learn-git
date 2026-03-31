@@ -61,3 +61,11 @@ const sum = array.reduce(async (acc, pre) => {
 sum.then(r => {
   console.log(r);
 })
+
+
+/**
+ * flex:1 1 0 的 basis 是 0，不考虑内容宽度，
+所有子元素强制平分父容器空间；
+  flex:1 1 auto 的 basis 是 auto，
+先根据内容占据宽度，再分配剩余空间，宽度会受内容多少影响。
+ */

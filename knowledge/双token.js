@@ -22,7 +22,10 @@ let isRefreshing = false
 let requestQueue = []
 
 // ====================
-// 3. 刷新接口（RT 自动在 Cookie 里，不用传！）
+// 3. 刷新接口（RT 自动在 Cookie 里，不用传！）主流方案
+// 放在localStorage里容易被xss偷
+// 重要接口还是需要csrf token防csrf
+// 关闭标签页后 CSRF Token 虽然会丢失，但不会造成安全风险，因为前端重新进入页面时会调用一个初始化接口，由后端动态生成一个新的 CSRF Token 并返回给前端，前端存入内存后再使用。这样每次会话都有全新的 CSRF Token，攻击者无法预测或伪造，从而保证了 /refresh-token 接口的 CSRF 安全。
 // ====================
 const refreshToken = () => {
   return service.post(
