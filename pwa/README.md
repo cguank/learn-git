@@ -1,3 +1,16 @@
+# 不同缓存策略
+HTML / 页面路由：NetworkFirst 或 Stale-While-Revalidate
+JS/CSS/ 字体 / 图片：CacheFirst
+核心静态壳资源：CacheOnly（预缓存）
+支付 / 验证码 / 实时接口：NetworkOnly
+列表 / 配置数据：NetworkFirst
+头像 / 非关键数据：Stale-While-Revalidate
+
+Cache First 是 “能用缓存就绝不发网络”；
+Stale-While-Revalidate 静默更新 是 “先给缓存，同时后台发请求更新，下次生效”。
+Cache Only 只使用缓存，缓存不存在就失败，完全不发网络，适合预缓存的应用壳资源。
+Cache First 优先用缓存，缓存没有才走网络并自动缓存，适合图片、JS、CSS 等静态资源。
+
 # PWA Demo
 
 最小可运行 PWA 演示：**Manifest + Service Worker + 安装提示 + 离线页**。
