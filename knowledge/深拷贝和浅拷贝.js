@@ -54,25 +54,49 @@ function deepCopy(target) {
 }
 
 function deepClone(obj,cache=new WeakMap()) {
-  if (obj === null || typeof obj !== 'object') return obj;
-  if (cache.has(obj)) return cache.get(obj);
-  if (obj instanceof Date) return new Date(obj)
-  if (obj instanceof RegExp) return new RegExp(obj)
-  if (obj instanceof Map) return new Map(obj)
-  if (obj instanceof Set) return new Set(obj)
-  if (obj instanceof Error) {
-    const err = new Error(obj.message);
-    err.stack = obj.stack;
-    return err;
+    // 原始值 & 函数直接返回
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (cache.has(obj)) return cache.get(obj);
+    // 日期
+    if (obj instanceof Date) return new Date(obj)
+    // 正则
+    if (obj instanceof RegExp) return new RegExp(obj)
+    // 错误对象
+    if (obj instanceof Error) {
+      const err = new Error(obj.message);
+      err.stack = obj.stack;
+      cache.set(obj, err); // 必须加缓存 err.self=err
+      return err;
+    }
+    // ✅ 正确深拷贝 Map
+    if (obj instanceof Map) {
+      const newMap = new Map();
+      cache.set(obj, newMap); // 先缓存，防止循环引用
+      for (const [key, val] of obj) {
+        newMap.set(deepClone(key, cache), deepClone(val, cache)); // 递归拷贝 key + value
+      }
+      return newMap;
+    }
+    // ✅ 正确深拷贝 Set
+    if (obj instanceof Set) {
+      const newSet = new Set();
+      cache.set(obj, newSet);
+      for (const val of obj) {
+        newSet.add(deepClone(val, cache)); // 递归拷贝每个元素
+      }
+      return newSet;
+    }
+    // WeakMap / WeakSet 无法拷贝，直接返回. 因为元素引用随时消失，不能遍历也没有size
+    if(obj instanceof WeakMap || obj instanceof WeakSet) return obj;
+    // 数组 / 对象
+    const newObj = Array.isArray(obj) ? [] : {};
+    cache.set(obj, newObj);
+    const keys = Reflect.ownKeys(obj);
+    for (const key of keys) {
+      newObj[key] = deepClone(obj[key], cache);
+    }
+    return newObj;
   }
-  const newObj = Array.isArray(obj) ? [] : {};
-  cache.set(obj, newObj);
-  const keys = Reflect.ownKeys(obj);
-  for (const key of keys) {
-    newObj[key] = deepClone(obj[key],cache);
-  }
-  return newObj;
-}
 
 /**
  * 完整拷贝一个对象obj，包括obj的原型
