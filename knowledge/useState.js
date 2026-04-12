@@ -33,10 +33,8 @@ function useState(initial) {
     workInProgressHook = workInProgressHook.next
     const baseState = hook.memoizedState
     const action = hook.update
-    if (action) {
-      const newState = typeof action === 'function' ? action(baseState) : action
-      hook.memoizedState = newState
-    }
+    const newState = typeof action === 'function' ? action(baseState) : action
+    hook.memoizedState = newState
   }
   return [hook.memoizedState, dispatch(hook)]
 }
