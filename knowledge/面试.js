@@ -30,13 +30,13 @@ sayName2() // name, 箭头函数会指向类的实例
 
 const obj = {
   count: 10,
-  doSomethingLater () {
+  doSomethingLater() {
     // settimeout里改成箭头函数即可
     setTimeout(function () {
       // 此函数在 window 作用域下执行
-      this.count++;
-      console.log(this.count);
-    }, 300);
+      this.count++
+      console.log(this.count)
+    }, 300)
 
     // 普通函数看有没有左边的那个对象，没有则是全局对象
     ;(function () {
@@ -45,23 +45,30 @@ const obj = {
       console.log(this.count) // 输出“NaN”，因为“count”属性不在
     })()
   },
-};
+}
 
-obj.doSomethingLater(); // 输出“NaN”，因为“count”属性不在 window 作用域下。
+obj.doSomethingLater() // 输出“NaN”，因为“count”属性不在 window 作用域下。
+
+const obj = {
+  a: 1,
+  fn() {
+    return () => console.log(this.a)
+  },
+}
+obj.fn()() // 1
 
 // reduce reduce 传的是「上一次的返回值」。
 const array = [1, 2, 3]
 const getRandom = () => Promise.resolve(Math.random())
 // async 的返回值一定是 Promise，所以下一轮的 acc 往往是 Promise
 const sum = array.reduce(async (acc, pre) => {
-  const random = await getRandom();
-  const finalAcc = await acc;
-  return finalAcc+random+pre
-},0)
-sum.then(r => {
-  console.log(r);
+  const random = await getRandom()
+  const finalAcc = await acc
+  return finalAcc + random + pre
+}, 0)
+sum.then((r) => {
+  console.log(r)
 })
-
 
 /**
  * flex:1 1 0 的 basis 是 0，不考虑内容宽度，
@@ -69,3 +76,28 @@ sum.then(r => {
   flex:1 1 auto 的 basis 是 auto，
 先根据内容占据宽度，再分配剩余空间，宽度会受内容多少影响。
  */
+
+// Promise
+console.log('start')
+setTimeout(() => {
+  console.log('timeout1')
+  Promise.resolve().then(() => {
+    console.log('promise1')
+  })
+}, 0)
+Promise.resolve().then(() => {
+  console.log('promise2')
+  setTimeout(() => {
+    console.log('timeout2')
+  }, 0)
+})
+async function async1() {
+  console.log('async1 start')
+  await async2()
+  console.log('async1 end')
+}
+async function async2() {
+  console.log('async2')
+}
+async1()
+console.log('end')
