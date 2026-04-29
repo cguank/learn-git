@@ -320,6 +320,14 @@ ol,
   line-height: 1.7;
 }
 
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
 .skeletonBlock {
   min-height: 160px;
   background:

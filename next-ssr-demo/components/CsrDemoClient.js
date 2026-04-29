@@ -13,9 +13,7 @@ export default function CsrDemoClient() {
       setStatus("loading");
 
       try {
-        const response = await fetch("/api/render-modes?mode=CSR", {
-          cache: "no-store"
-        });
+        const response = await fetch("/api/render-modes?mode=CSR");
         const json = await response.json();
 
         if (active) {

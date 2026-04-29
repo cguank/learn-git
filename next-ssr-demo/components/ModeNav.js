@@ -6,6 +6,7 @@ const links = [
   { href: "/csr", label: "CSR" },
   { href: "/ssg", label: "SSG" },
   { href: "/isr", label: "ISR" },
+  { href: "/server-to-client", label: "Props" },
   { href: "/interview", label: "Interview" }
 ];
 
