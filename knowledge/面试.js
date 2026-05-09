@@ -101,3 +101,7 @@ async function async2() {
 }
 async1()
 console.log('end')
+
+// react通信4种方式，学习zustand/redux
+// react为何要有hook，解决生命周期；解决函数组件无状态问题
+// 最简单实现react需要什么，fiber链表结构、useState hook
