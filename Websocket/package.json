@@ -1,0 +1,20 @@
+{
+  "name": "websocket-demo",
+  "version": "1.0.0",
+  "description": "A small WebSocket demo with a Node.js server and browser client.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "websocket",
+    "demo",
+    "chat"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.17.1"
+  }
+}

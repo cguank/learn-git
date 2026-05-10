@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel intro">
+        <div>
+          <p class="eyebrow">WebSocket Demo</p>
+          <h1>实时消息演示</h1>
+          <p class="intro-copy">先登录，再打开多个浏览器窗口，发送消息、改名、断开重连，即可观察带用户鉴权的 WebSocket 双向通信。</p>
+        </div>
+        <div class="status-card">
+          <span id="statusDot" class="status-dot"></span>
+          <div>
+            <strong id="statusText">未连接</strong>
+            <span id="endpointText">ws://localhost:3003</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel sidebar">
+          <form id="authForm" class="auth-form">
+            <div class="auth-heading">
+              <h2>用户登录</h2>
+              <span id="authUserLabel">未登录</span>
+            </div>
+
+            <div class="field">
+              <label for="authUsername">Username</label>
+              <input id="authUsername" value="alice" autocomplete="username" />
+            </div>
+
+            <div class="field">
+              <label for="authPassword">Password</label>
+              <input id="authPassword" type="password" placeholder="alice123" autocomplete="current-password" />
+            </div>
+
+            <div class="auth-actions">
+              <button id="loginButton" type="submit">登录</button>
+              <button id="logoutButton" type="button" class="secondary">退出</button>
+            </div>
+
+            <p id="authStatus" class="auth-status">请输入账号密码登录</p>
+          </form>
+
+          <div class="field">
+            <label for="serverUrl">Server URL</label>
+            <input id="serverUrl" value="ws://localhost:3003/ws" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label for="displayName">Display Name</label>
+            <div class="inline-control">
+              <input id="displayName" value="Guest" maxlength="24" autocomplete="off" />
+              <button id="renameButton" type="button">改名</button>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button id="connectButton" type="button">连接</button>
+            <button id="disconnectButton" type="button" class="secondary">断开</button>
+            <button id="pingButton" type="button" class="secondary">Ping</button>
+          </div>
+
+          <div class="stat-grid">
+            <div>
+              <span>在线人数</span>
+              <strong id="onlineCount">0</strong>
+            </div>
+            <div>
+              <span>延迟</span>
+              <strong id="latencyText">--</strong>
+            </div>
+          </div>
+
+          <div class="users">
+            <h2>在线用户</h2>
+            <ul id="userList"></ul>
+          </div>
+        </aside>
+
+        <section class="panel chat">
+          <div class="chat-header">
+            <div>
+              <h2>消息列表</h2>
+              <p>服务端会把聊天消息广播给所有已连接客户端。</p>
+            </div>
+            <button id="clearButton" type="button" class="secondary">清空</button>
+          </div>
+
+          <div id="messageList" class="message-list" aria-live="polite"></div>
+
+          <form id="messageForm" class="message-form">
+            <input id="messageInput" placeholder="输入要发送的消息" autocomplete="off" maxlength="500" />
+            <button type="submit">发送</button>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
