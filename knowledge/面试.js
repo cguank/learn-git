@@ -56,6 +56,8 @@ const obj = {
   },
 }
 obj.fn()() // 1
+const a = obj.fn
+a()() // undefined
 
 // reduce reduce 传的是「上一次的返回值」。
 const array = [1, 2, 3]

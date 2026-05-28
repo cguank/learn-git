@@ -170,3 +170,10 @@
  * 1.生成的文件是二进制的，意味着更小的文件，更快的下载分发
  * 2.可以由非js语言来编写，主要用于计算复杂的地方。
  */
+
+/**
+ * cookie
+ * 1. httponly 防止xss，js不能操作cookie
+ * 2. samesite,跨域会不会发送cookie，strict；lax；none+secure
+ * 3. refresh token 放cookie，可以通过设置domain+path，这样只有特定的接口才会传递cookie
+ */
