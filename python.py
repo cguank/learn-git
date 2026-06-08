@@ -1,4 +1,1 @@
-list = []
-if list:
-    print('123')
-print(list)
+print(-4%3)
